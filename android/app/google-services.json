@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "941895250603",
+    "project_id": "my-mushrooms-hunter",
+    "storage_bucket": "my-mushrooms-hunter.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:941895250603:android:9d1be4e7e42ab3af5a7dee",
+        "android_client_info": {
+          "package_name": "com.annacar.mymushroomshunter"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCtbtuoJz6iPNWQJ8lBu2m7LsMrcZvSO64"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
