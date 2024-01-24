@@ -30,8 +30,8 @@ class AuthGate extends StatelessWidget {
               return Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: action == AuthAction.signIn
-                    ? const Text('Welcome to FlutterFire, please sign in!')
-                    : const Text('Welcome to Flutterfire, please sign up!'),
+                    ? const Text('Welcome to My Mushrooms, please sign in!')
+                    : const Text('Welcome to My Mushrooms, please sign up!'),
               );
             },
             footerBuilder: (context, action) {
@@ -43,18 +43,9 @@ class AuthGate extends StatelessWidget {
                 ),
               );
             },
-            sideBuilder: (context, shrinkOffset) {
-              return Padding(
-                padding: const EdgeInsets.all(20),
-                child: AspectRatio(
-                  aspectRatio: 1,
-                  // child: Image.asset('flutterfire_300x.png'),
-                ),
-              );
-            },
           );
         }
-        return const HomeScreen();
+        return const MyHomePage();
       },
     );
   }
