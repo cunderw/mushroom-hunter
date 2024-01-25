@@ -1,7 +1,7 @@
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:my_mushrooms_hunter/screens/my_mushrooms.dart';
-import 'package:my_mushrooms_hunter/screens/near_me.dart';
+import 'package:my_mushrooms_hunter/views/my_mushrooms.dart';
+import 'package:my_mushrooms_hunter/views/near_me.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});

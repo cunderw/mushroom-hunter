@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'auth_gate.dart';
+import 'controllers/auth_gate.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -11,6 +11,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.green.shade900),
         useMaterial3: true,
       ),
+      debugShowCheckedModeBanner: false,
       home: const AuthGate(),
     );
   }
