@@ -1,6 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:my_mushrooms_hunter/firebase_options.dart';
+import 'package:my_mushrooms_hunter/utils/firebase_options.dart';
 
 import 'app.dart';
 
