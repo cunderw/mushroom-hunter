@@ -49,9 +49,6 @@ class _LocationPickerState extends State<LocationPicker> {
       return Future.error('Location permissions are permanently denied');
     }
 
-    debugPrint('initialLat: $initialLat');
-    debugPrint('initialLng: $initialLng');
-
     if (initialLat != null && initialLng != null) {
       initialPostion = LatLng(initialLat!, initialLng!);
     } else {
@@ -63,7 +60,6 @@ class _LocationPickerState extends State<LocationPicker> {
       _currentPosition = initialPostion;
     });
 
-    // Update the map's camera to focus on the current position
     _mapController?.animateCamera(
       CameraUpdate.newCameraPosition(
         CameraPosition(
@@ -77,7 +73,6 @@ class _LocationPickerState extends State<LocationPicker> {
   void _onMapCreated(GoogleMapController controller) {
     _mapController = controller;
 
-    // If _currentPosition is not the default (0, 0), set the marker and update the camera
     if (_currentPosition.latitude != 0 && _currentPosition.longitude != 0) {
       controller.animateCamera(
         CameraUpdate.newCameraPosition(
@@ -87,6 +82,7 @@ class _LocationPickerState extends State<LocationPicker> {
           ),
         ),
       );
+
       setState(() {
         _markers.add(
           Marker(
@@ -101,7 +97,7 @@ class _LocationPickerState extends State<LocationPicker> {
 
   void _handleSelectLocation(LatLng location) {
     setState(() {
-      _markers.clear(); // Remove the old marker
+      _markers.clear();
       _markers.add(
         Marker(
           markerId: MarkerId('selectedPos'),
@@ -121,9 +117,7 @@ class _LocationPickerState extends State<LocationPicker> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
-            // Handle the back button tap
-            Navigator.pop(context,
-                _selectedLocation); // Return the selected location, or null if none
+            Navigator.pop(context, _selectedLocation);
           },
         ),
       ),

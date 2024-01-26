@@ -9,6 +9,7 @@ environment:
 dependencies:
   firebase_auth: ^4.16.0
   firebase_core: ^2.24.2
+
   firebase_ui_auth: ^1.12.1
   firebase_ui_oauth_google: ^1.2.16
   flutter:
@@ -17,6 +18,8 @@ dependencies:
   google_maps_flutter: ^2.0.6 # Check for the latest version
   geolocator: ^10.1.0
   image_picker: ^0.8.4+4 # Check for the latest version
+  firebase_storage: ^11.6.0
+  cloud_firestore: ^4.14.0
 
 dev_dependencies:
   flutter_test:

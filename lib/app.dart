@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'controllers/auth_gate.dart';
+import 'controllers/auth_controller.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

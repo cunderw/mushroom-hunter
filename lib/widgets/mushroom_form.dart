@@ -1,7 +1,6 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:my_mushrooms_hunter/controllers/mushroom_controller.dart';
 import 'package:my_mushrooms_hunter/widgets/image_picker.dart';
 import 'package:my_mushrooms_hunter/widgets/location_picker.dart';
 import 'package:image_picker/image_picker.dart';
@@ -23,13 +22,14 @@ class _MushroomFormState extends State<MushroomForm> {
   DateTime _dateAdded = DateTime.now();
   double? _latitude = null;
   double? _longitude = null;
+  bool _isLoading = false;
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: _dateAdded, // Referencing the initial date
-      firstDate: DateTime(2000), // Set this to your requirement
-      lastDate: DateTime(2025), // Set this to your requirement
+      initialDate: _dateAdded,
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2025),
     );
     if (picked != null && picked != _dateAdded) {
       setState(() {
@@ -42,7 +42,6 @@ class _MushroomFormState extends State<MushroomForm> {
     setState(() {
       _selectedImage = image;
     });
-    // You can further process the image, like uploading it to a server
   }
 
   Future<void> _selectLocation() async {
@@ -81,6 +80,50 @@ class _MushroomFormState extends State<MushroomForm> {
     return 'Lat: $_latitude, Lng: $_longitude';
   }
 
+  Future<bool> submitForm() async {
+    if (_formKey.currentState!.validate()) {
+      if (_selectedImage == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Please select an image'),
+          ),
+        );
+        return false;
+      }
+
+      if (_latitude == null || _longitude == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Please select a location'),
+          ),
+        );
+        return false;
+      }
+
+      setState(() {
+        _isLoading = true;
+      });
+
+      await submitMushroom(
+        _selectedImage!,
+        _nameController.text,
+        _descriptionController.text,
+        LatLng(
+          _latitude!,
+          _longitude!,
+        ),
+        _dateAdded,
+      );
+
+      setState(() {
+        _isLoading = false;
+      });
+
+      return true;
+    }
+    return false;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -106,12 +149,11 @@ class _MushroomFormState extends State<MushroomForm> {
               GestureDetector(
                 onTap: () => _selectDate(context),
                 child: AbsorbPointer(
-                  // Prevents the keyboard from showing
                   child: TextFormField(
                     decoration: InputDecoration(
                       labelText:
                           '${_dateAdded.toIso8601String().split('T').first}',
-                      hintText: 'Date Found', // Display the selected date
+                      hintText: 'Date Found',
                     ),
                   ),
                 ),
@@ -120,7 +162,7 @@ class _MushroomFormState extends State<MushroomForm> {
                 onTap: _selectLocation,
                 child: AbsorbPointer(
                   child: TextFormField(
-                    readOnly: true, // Makes the field non-editable
+                    readOnly: true,
                     controller: TextEditingController(
                       text: _locationString(),
                     ),
@@ -135,12 +177,21 @@ class _MushroomFormState extends State<MushroomForm> {
               CustomImagePicker(onImagePicked: _handleImageSelection),
               SizedBox(height: 16.0),
               ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    // Process the data
+                onPressed: () async {
+                  if (_isLoading) return;
+                  bool isSubmitted = await submitForm();
+                  if (isSubmitted) {
+                    Navigator.of(context).pop();
                   }
                 },
-                child: Text('Submit'),
+                child: _isLoading
+                    ? CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      )
+                    : Text('Submit'),
+                style: ElevatedButton.styleFrom(
+                  minimumSize: Size(double.infinity, 50),
+                ),
               ),
             ],
           ),

@@ -1,19 +1,19 @@
-import 'package:my_mushrooms_hunter/models/geolocation.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class Mushroom {
   String name;
   String description;
-  GeoPoint
+  LatLng
       geolocation; // Assuming GeoPoint is a class that stores latitude and longitude
   String photoUrl;
-  DateTime dateAdded;
+  DateTime dateFound;
 
   Mushroom({
     required this.name,
     required this.description,
     required this.geolocation,
     required this.photoUrl,
-    required this.dateAdded,
+    required this.dateFound,
   });
 
   // Converts a Mushroom instance to a Map
@@ -26,7 +26,7 @@ class Mushroom {
         'longitude': geolocation.longitude
       },
       'photoUrl': photoUrl,
-      'dateAdded': dateAdded.toIso8601String(),
+      'dateFound': dateFound.toIso8601String(),
     };
   }
 
@@ -35,10 +35,10 @@ class Mushroom {
     return Mushroom(
       name: map['name'],
       description: map['description'],
-      geolocation: GeoPoint(
+      geolocation: LatLng(
           map['geolocation']['latitude'], map['geolocation']['longitude']),
       photoUrl: map['photoUrl'],
-      dateAdded: DateTime.parse(map['dateAdded']),
+      dateFound: DateTime.parse(map['dateFound']),
     );
   }
 }

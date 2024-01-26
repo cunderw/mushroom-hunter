@@ -20,7 +20,7 @@ class _CustomImagePickerState extends State<CustomImagePicker> {
     setState(() {
       _image = image;
     });
-    widget.onImagePicked(image); // Callback to return the selected image
+    widget.onImagePicked(image);
   }
 
   @override
@@ -28,7 +28,7 @@ class _CustomImagePickerState extends State<CustomImagePicker> {
     return GestureDetector(
       onTap: _pickImage,
       child: Container(
-        height: 200, // Customize as needed
+        height: 200,
         width: double.infinity,
         decoration: BoxDecoration(
           color: Colors.grey[300],
