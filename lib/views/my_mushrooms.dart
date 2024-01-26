@@ -1,8 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:my_mushrooms_hunter/services/firebase/mushroom_service.dart';
 import 'package:my_mushrooms_hunter/widgets/mushroom_form.dart';
+import 'package:my_mushrooms_hunter/widgets/mushroom_list.dart';
 
 class MyMushrooms extends StatelessWidget {
-  const MyMushrooms({super.key});
+  MyMushrooms({super.key});
+  final String currentUserId = FirebaseAuth.instance.currentUser!.uid;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,15 +29,8 @@ class MyMushrooms extends StatelessWidget {
           ),
         ],
       ),
-      body: ListView(
-        children: <Widget>[
-          ListTile(
-            title: Text('Item 1'),
-          ),
-          ListTile(
-            title: Text('Item 2'),
-          ),
-        ],
+      body: MushroomList(
+        streamMushrooms: streamUserMushrooms(currentUserId),
       ),
     );
   }

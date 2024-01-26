@@ -20,3 +20,23 @@ Future<void> saveMushroom(Mushroom mushroom) async {
     debugPrint("Failed to add mushroom: $error");
   });
 }
+
+Future<List<Mushroom>> fetchUserMushrooms(String userId) async {
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+  QuerySnapshot querySnapshot = await firestore
+      .collection('mushrooms')
+      .where('userID', isEqualTo: userId)
+      .get();
+
+  return querySnapshot.docs.map((doc) => Mushroom.fromFirestore(doc)).toList();
+}
+
+Stream<List<Mushroom>> streamUserMushrooms(String userId) {
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+  return firestore
+      .collection('mushrooms')
+      .where('userID', isEqualTo: userId)
+      .snapshots()
+      .map((snapshot) =>
+          snapshot.docs.map((doc) => Mushroom.fromFirestore(doc)).toList());
+}

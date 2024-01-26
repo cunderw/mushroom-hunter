@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class Mushroom {
+  String? id;
   String name;
   String description;
   LatLng
@@ -9,6 +11,7 @@ class Mushroom {
   DateTime dateFound;
 
   Mushroom({
+    this.id,
     required this.name,
     required this.description,
     required this.geolocation,
@@ -39,6 +42,20 @@ class Mushroom {
           map['geolocation']['latitude'], map['geolocation']['longitude']),
       photoUrl: map['photoUrl'],
       dateFound: DateTime.parse(map['dateFound']),
+    );
+  }
+
+  factory Mushroom.fromFirestore(DocumentSnapshot doc) {
+    Map data = doc.data() as Map;
+
+    return Mushroom(
+      id: doc.id,
+      name: data['name'] ?? '',
+      description: data['description'] ?? '',
+      geolocation: LatLng(
+          data['geolocation']['latitude'], data['geolocation']['longitude']),
+      photoUrl: data['photoUrl'] ?? '',
+      dateFound: DateTime.parse(data['dateFound']),
     );
   }
 }
