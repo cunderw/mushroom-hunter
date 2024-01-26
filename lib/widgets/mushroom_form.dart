@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:my_mushrooms_hunter/widgets/image_picker.dart';
 import 'package:my_mushrooms_hunter/widgets/location_picker.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -17,7 +18,7 @@ class _MushroomFormState extends State<MushroomForm> {
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _photoUrlController = TextEditingController();
 
-  XFile? _image;
+  XFile? _selectedImage;
 
   DateTime _dateAdded = DateTime.now();
   double? _latitude = null;
@@ -37,14 +38,11 @@ class _MushroomFormState extends State<MushroomForm> {
     }
   }
 
-  Future<void> _pickImage() async {
-    final ImagePicker _picker = ImagePicker();
-    // Pick an image
-    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+  void _handleImageSelection(XFile? image) {
     setState(() {
-      _image = image;
+      _selectedImage = image;
     });
-    // Optionally, upload the image to a server or storage to get a URL
+    // You can further process the image, like uploading it to a server
   }
 
   Future<void> _selectLocation() async {
@@ -128,13 +126,7 @@ class _MushroomFormState extends State<MushroomForm> {
                 ),
               ),
               SizedBox(height: 16.0),
-              if (_image != null) Image.file(File(_image!.path)),
-              SizedBox(height: 16.0),
-              // Image picker button
-              ElevatedButton(
-                onPressed: _pickImage,
-                child: Text('Pick Image'),
-              ),
+              CustomImagePicker(onImagePicked: _handleImageSelection),
               SizedBox(height: 16.0),
               ElevatedButton(
                 onPressed: () {
