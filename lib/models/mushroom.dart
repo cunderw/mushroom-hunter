@@ -6,12 +6,14 @@ class Mushroom {
   GeoPoint
       geolocation; // Assuming GeoPoint is a class that stores latitude and longitude
   String photoUrl;
+  DateTime dateAdded;
 
   Mushroom({
     required this.name,
     required this.description,
     required this.geolocation,
     required this.photoUrl,
+    required this.dateAdded,
   });
 
   // Converts a Mushroom instance to a Map
@@ -24,6 +26,7 @@ class Mushroom {
         'longitude': geolocation.longitude
       },
       'photoUrl': photoUrl,
+      'dateAdded': dateAdded.toIso8601String(),
     };
   }
 
@@ -35,6 +38,7 @@ class Mushroom {
       geolocation: GeoPoint(
           map['geolocation']['latitude'], map['geolocation']['longitude']),
       photoUrl: map['photoUrl'],
+      dateAdded: DateTime.parse(map['dateAdded']),
     );
   }
 }

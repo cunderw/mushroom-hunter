@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_mushrooms_hunter/widgets/mushroom_form.dart';
 
 class MyMushrooms extends StatelessWidget {
   const MyMushrooms({super.key});
@@ -15,7 +16,11 @@ class MyMushrooms extends StatelessWidget {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.add),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => MushroomForm()),
+              );
+            },
           ),
         ],
       ),

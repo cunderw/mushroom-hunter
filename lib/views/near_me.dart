@@ -8,7 +8,7 @@ class NearMe extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Text('Near Me', style: Theme.of(context).textTheme.headline4),
+          Text('Near Me', style: Theme.of(context).textTheme.headlineMedium),
         ],
       ),
     );
