@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_mushrooms_hunter/models/mushroom.dart';
+import 'package:my_mushrooms_hunter/widgets/mushroom_card.dart';
 
 class MushroomList extends StatefulWidget {
   final Stream<List<Mushroom>> streamMushrooms;
@@ -26,10 +27,7 @@ class _MushroomListState extends State<MushroomList> {
             itemCount: mushrooms.length,
             itemBuilder: (context, index) {
               Mushroom mushroom = mushrooms[index];
-              return ListTile(
-                title: Text(mushroom.name),
-                subtitle: Text(mushroom.description),
-              );
+              return MushroomCard(mushroom: mushroom);
             },
           );
         } else {
