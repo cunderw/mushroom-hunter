@@ -3,24 +3,34 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class LocationPicker extends StatefulWidget {
+  final double? initialLat;
+  final double? initialLng;
+  LocationPicker(this.initialLat, this.initialLng);
   @override
-  _LocationPickerState createState() => _LocationPickerState();
+  _LocationPickerState createState() =>
+      _LocationPickerState(initialLat, initialLng);
 }
 
 class _LocationPickerState extends State<LocationPicker> {
+  GoogleMapController? _mapController;
+  final double? initialLat;
+  final double? initialLng;
   LatLng _currentPosition = LatLng(0, 0);
   LatLng? _selectedLocation;
+
+  _LocationPickerState(this.initialLat, this.initialLng);
   final Set<Marker> _markers = {};
 
   @override
   void initState() {
     super.initState();
-    _determinePosition();
+    _determineInitialPosition();
   }
 
-  Future<void> _determinePosition() async {
+  Future<void> _determineInitialPosition() async {
     bool serviceEnabled;
     LocationPermission permission;
+    LatLng initialPostion;
 
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
@@ -39,23 +49,54 @@ class _LocationPickerState extends State<LocationPicker> {
       return Future.error('Location permissions are permanently denied');
     }
 
-    Position position = await Geolocator.getCurrentPosition();
+    debugPrint('initialLat: $initialLat');
+    debugPrint('initialLng: $initialLng');
+
+    if (initialLat != null && initialLng != null) {
+      initialPostion = LatLng(initialLat!, initialLng!);
+    } else {
+      Position position = await Geolocator.getCurrentPosition();
+      initialPostion = LatLng(position.latitude, position.longitude);
+    }
+
     setState(() {
-      _currentPosition = LatLng(position.latitude, position.longitude);
+      _currentPosition = initialPostion;
     });
+
+    // Update the map's camera to focus on the current position
+    _mapController?.animateCamera(
+      CameraUpdate.newCameraPosition(
+        CameraPosition(
+          target: initialPostion,
+          zoom: 11.0,
+        ),
+      ),
+    );
   }
 
   void _onMapCreated(GoogleMapController controller) {
-    setState(() {
-      _markers.add(
-        Marker(
-          markerId: MarkerId('currentPos'),
-          position: _currentPosition,
-          icon: BitmapDescriptor.defaultMarker,
-          draggable: true, // Optional: if you want the marker to be draggable
+    _mapController = controller;
+
+    // If _currentPosition is not the default (0, 0), set the marker and update the camera
+    if (_currentPosition.latitude != 0 && _currentPosition.longitude != 0) {
+      controller.animateCamera(
+        CameraUpdate.newCameraPosition(
+          CameraPosition(
+            target: _currentPosition,
+            zoom: 11.0,
+          ),
         ),
       );
-    });
+      setState(() {
+        _markers.add(
+          Marker(
+            markerId: MarkerId('currentPos'),
+            position: _currentPosition,
+            icon: BitmapDescriptor.defaultMarker,
+          ),
+        );
+      });
+    }
   }
 
   void _handleSelectLocation(LatLng location) {

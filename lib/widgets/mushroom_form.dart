@@ -47,8 +47,14 @@ class _MushroomFormState extends State<MushroomForm> {
 
   Future<void> _selectLocation() async {
     final LatLng? result = await Navigator.of(context).push(
-      MaterialPageRoute(builder: (context) => LocationPicker()),
+      MaterialPageRoute(
+        builder: (context) => LocationPicker(
+          _latitude,
+          _longitude,
+        ),
+      ),
     );
+
     setState(() {
       if (result == null) return;
       _latitude = result.latitude;
