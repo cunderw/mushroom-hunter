@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_mushrooms_hunter/models/mushroom.dart';
+import 'package:my_mushrooms_hunter/services/firebase/mushroom_service.dart';
 import 'package:my_mushrooms_hunter/widgets/mushroom_card.dart';
 
 class MushroomList extends StatefulWidget {
@@ -26,8 +27,31 @@ class _MushroomListState extends State<MushroomList> {
           return ListView.builder(
             itemCount: mushrooms.length,
             itemBuilder: (context, index) {
-              Mushroom mushroom = mushrooms[index];
-              return MushroomCard(mushroom: mushroom);
+              final mushroom = mushrooms[index];
+              return Dismissible(
+                key: Key(mushroom.id!),
+                background: Container(
+                  color: Colors.red,
+                  alignment: Alignment.centerRight,
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 20.0),
+                    child: Icon(Icons.delete, color: Colors.white),
+                  ),
+                ),
+                direction: DismissDirection.endToStart,
+                onDismissed: (direction) async {
+                  setState(() {
+                    mushrooms.removeAt(index);
+                  });
+
+                  await deleteMushroom(mushroom.id!);
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Mushroom deleted')),
+                  );
+                },
+                child: MushroomCard(mushroom: mushroom),
+              );
             },
           );
         } else {

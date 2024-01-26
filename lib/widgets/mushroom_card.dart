@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:my_mushrooms_hunter/models/mushroom.dart';
@@ -11,11 +12,13 @@ class MushroomCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: ListTile(
-        leading: Image.network(
-          mushroom.photoUrl,
+        leading: CachedNetworkImage(
+          imageUrl: mushroom.photoUrl,
           width: 50,
           height: 50,
           fit: BoxFit.cover,
+          placeholder: (context, url) => CircularProgressIndicator(),
+          errorWidget: (context, url, error) => Icon(Icons.error),
         ),
         title: Text(mushroom.name),
         subtitle: Column(
