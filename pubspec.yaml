@@ -16,6 +16,7 @@ dependencies:
   google_sign_in: ^6.2.1
   google_maps_flutter: ^2.0.6 # Check for the latest version
   geolocator: ^10.1.0
+  image_picker: ^0.8.4+4 # Check for the latest version
 
 dev_dependencies:
   flutter_test:

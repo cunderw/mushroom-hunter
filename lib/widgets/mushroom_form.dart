@@ -1,7 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:my_mushrooms_hunter/widgets/location_picker.dart'; // For input formatters if needed
+import 'package:my_mushrooms_hunter/widgets/location_picker.dart';
+import 'package:image_picker/image_picker.dart';
 
 class MushroomForm extends StatefulWidget {
   const MushroomForm({Key? key}) : super(key: key);
@@ -14,10 +16,10 @@ class _MushroomFormState extends State<MushroomForm> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _photoUrlController = TextEditingController();
-  DateTime _dateAdded =
-      DateTime.now(); // Default to current date, can be changed
 
-  // Dummy variables for geolocation, replace with actual implementation
+  XFile? _image;
+
+  DateTime _dateAdded = DateTime.now();
   double? _latitude = null;
   double? _longitude = null;
 
@@ -35,6 +37,46 @@ class _MushroomFormState extends State<MushroomForm> {
     }
   }
 
+  Future<void> _pickImage() async {
+    final ImagePicker _picker = ImagePicker();
+    // Pick an image
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    setState(() {
+      _image = image;
+    });
+    // Optionally, upload the image to a server or storage to get a URL
+  }
+
+  Future<void> _selectLocation() async {
+    final LatLng? result = await Navigator.of(context).push(
+      MaterialPageRoute(builder: (context) => LocationPicker()),
+    );
+    setState(() {
+      if (result == null) return;
+      _latitude = result.latitude;
+      _longitude = result.longitude;
+    });
+  }
+
+  String? _validateName(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter the mushroom name';
+    }
+    return null;
+  }
+
+  String? _validateDescription(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter a description';
+    }
+    return null;
+  }
+
+  String _locationString() {
+    if (_latitude == null || _longitude == null) return 'Select Location';
+    return 'Lat: $_latitude, Lng: $_longitude';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,26 +92,15 @@ class _MushroomFormState extends State<MushroomForm> {
               TextFormField(
                 controller: _nameController,
                 decoration: InputDecoration(labelText: 'Name'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter the mushroom name';
-                  }
-                  return null;
-                },
+                validator: _validateName,
               ),
               TextFormField(
                 controller: _descriptionController,
                 decoration: InputDecoration(labelText: 'Description'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a description';
-                  }
-                  return null;
-                },
+                validator: _validateDescription,
               ),
               GestureDetector(
-                onTap: () => _selectDate(
-                    context), // Call _selectDate when the field is tapped
+                onTap: () => _selectDate(context),
                 child: AbsorbPointer(
                   // Prevents the keyboard from showing
                   child: TextFormField(
@@ -81,46 +112,28 @@ class _MushroomFormState extends State<MushroomForm> {
                   ),
                 ),
               ),
-              TextFormField(
-                controller: _photoUrlController,
-                decoration: InputDecoration(labelText: 'Photo URL'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter the photo URL';
-                  }
-                  return null;
-                },
-              ),
               GestureDetector(
-                onTap: () async {
-                  // Navigate to the LocationPicker and await the result
-                  final LatLng? result = await Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => LocationPicker()),
-                  );
-
-                  // Update the state with the selected location
-                  setState(() {
-                    if (result == null) return;
-                    _latitude = result.latitude;
-                    _longitude = result.longitude;
-                  });
-                },
+                onTap: _selectLocation,
                 child: AbsorbPointer(
-                  // Prevents the keyboard from showing when tapping the field
                   child: TextFormField(
                     readOnly: true, // Makes the field non-editable
                     controller: TextEditingController(
-                      text: _latitude != null && _longitude != null
-                          ? 'Lat: $_latitude, Lng: $_longitude'
-                          : 'Select Location',
+                      text: _locationString(),
                     ),
                     decoration: InputDecoration(
                       labelText: 'Location',
-                      suffixIcon: Icon(
-                          Icons.map), // Optional: adds a map icon to the field
+                      suffixIcon: Icon(Icons.map),
                     ),
                   ),
                 ),
+              ),
+              SizedBox(height: 16.0),
+              if (_image != null) Image.file(File(_image!.path)),
+              SizedBox(height: 16.0),
+              // Image picker button
+              ElevatedButton(
+                onPressed: _pickImage,
+                child: Text('Pick Image'),
               ),
               SizedBox(height: 16.0),
               ElevatedButton(
