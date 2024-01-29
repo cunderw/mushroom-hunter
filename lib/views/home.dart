@@ -52,6 +52,7 @@ class _MyHomePageState extends State<MyHomePage> {
               children: [
                 Expanded(child: mainArea),
                 SafeArea(
+                  bottom: false,
                   child: BottomNavigationBar(
                     items: [
                       BottomNavigationBarItem(
