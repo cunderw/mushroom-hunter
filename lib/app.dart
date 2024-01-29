@@ -22,8 +22,12 @@ class MyCupertinoApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CupertinoApp(
+      theme: CupertinoThemeData(
+        primaryColor: CupertinoColors.systemGreen,
+        primaryContrastingColor: CupertinoColors.systemBlue,
+        scaffoldBackgroundColor: CupertinoColors.systemGroupedBackground,
+      ),
       home: const AuthGate(),
-      // Define other CupertinoApp properties as needed
     );
   }
 }

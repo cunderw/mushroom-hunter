@@ -36,7 +36,6 @@ class _MushroomFormState extends State<MushroomForm> {
       builder: (BuildContext builder) {
         return Container(
           height: MediaQuery.of(context).copyWith().size.height / 3,
-          color: Colors.white,
           child: CupertinoDatePicker(
             initialDateTime: DateTime.now(),
             onDateTimeChanged: (DateTime newDate) {
