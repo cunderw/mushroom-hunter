@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
 class NearMe extends StatelessWidget {
   const NearMe({super.key});
@@ -8,7 +9,10 @@ class NearMe extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Text('Near Me', style: Theme.of(context).textTheme.headlineMedium),
+          PlatformText(
+            'Near Me',
+            style: Theme.of(context).textTheme.headlineMedium,
+          ),
         ],
       ),
     );

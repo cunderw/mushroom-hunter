@@ -1,7 +1,12 @@
+import 'dart:io';
+
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:my_mushrooms_hunter/views/my_mushrooms.dart';
 import 'package:my_mushrooms_hunter/views/near_me.dart';
+
+bool isIOS = Platform.isIOS;
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -46,25 +51,23 @@ class _MyHomePageState extends State<MyHomePage> {
       body: LayoutBuilder(
         builder: (context, constraints) {
           if (constraints.maxWidth < 600) {
-            // Use a more mobile-friendly layout with BottomNavigationBar
-            // on narrow screens.
-            return Column(
-              children: [
-                Expanded(child: mainArea),
-                SafeArea(
-                  bottom: false,
-                  child: BottomNavigationBar(
-                    items: [
+            if (isIOS) {
+              // iOS-specific UI, like CupertinoTabBar
+              return Column(
+                children: [
+                  Expanded(child: mainArea),
+                  CupertinoTabBar(
+                    items: <BottomNavigationBarItem>[
                       BottomNavigationBarItem(
-                        icon: Icon(Icons.home),
+                        icon: Icon(CupertinoIcons.home),
                         label: 'Home',
                       ),
                       BottomNavigationBarItem(
-                        icon: Icon(Icons.place),
+                        icon: Icon(CupertinoIcons.location),
                         label: 'Near Me',
                       ),
                       BottomNavigationBarItem(
-                        icon: Icon(Icons.person),
+                        icon: Icon(CupertinoIcons.person),
                         label: 'Profile',
                       ),
                     ],
@@ -75,9 +78,40 @@ class _MyHomePageState extends State<MyHomePage> {
                       });
                     },
                   ),
-                )
-              ],
-            );
+                ],
+              );
+            } else {
+              return Column(
+                children: [
+                  Expanded(child: mainArea),
+                  SafeArea(
+                    bottom: false,
+                    child: BottomNavigationBar(
+                      items: [
+                        BottomNavigationBarItem(
+                          icon: Icon(Icons.home),
+                          label: 'Home',
+                        ),
+                        BottomNavigationBarItem(
+                          icon: Icon(Icons.place),
+                          label: 'Near Me',
+                        ),
+                        BottomNavigationBarItem(
+                          icon: Icon(Icons.person),
+                          label: 'Profile',
+                        ),
+                      ],
+                      currentIndex: selectedIndex,
+                      onTap: (value) {
+                        setState(() {
+                          selectedIndex = value;
+                        });
+                      },
+                    ),
+                  )
+                ],
+              );
+            }
           } else {
             return Row(
               children: [

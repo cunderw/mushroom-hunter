@@ -1,9 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'controllers/auth_controller.dart';
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class MyMaterialApp extends StatelessWidget {
+  const MyMaterialApp({super.key});
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -13,6 +14,16 @@ class MyApp extends StatelessWidget {
       ),
       debugShowCheckedModeBanner: false,
       home: const AuthGate(),
+    );
+  }
+}
+
+class MyCupertinoApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoApp(
+      home: const AuthGate(),
+      // Define other CupertinoApp properties as needed
     );
   }
 }
