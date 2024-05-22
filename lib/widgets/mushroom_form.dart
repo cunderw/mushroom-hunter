@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:my_mushrooms_hunter/controllers/mushroom_controller.dart';
@@ -18,9 +17,11 @@ class MushroomForm extends StatefulWidget {
 
 class _MushroomFormState extends State<MushroomForm> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _descriptionController = TextEditingController();
-  final TextEditingController _photoUrlController = TextEditingController();
+  final _nameController = TextEditingController();
+  final _descriptionController = TextEditingController();
+  final _photoUrlController = TextEditingController();
+  final _dateController = TextEditingController();
+  final _locationController = TextEditingController();
 
   XFile? _selectedImage;
 
@@ -29,7 +30,13 @@ class _MushroomFormState extends State<MushroomForm> {
   double? _longitude = null;
   bool _isLoading = false;
 
-  Future<void> _showMaterialDatePicker(BuildContext context) async {
+  String _locationString() {
+    if (_latitude == null || _longitude == null) return 'Select Location';
+    return 'Lat: $_latitude, Lng: $_longitude';
+  }
+
+  // Selectors
+  Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: _dateAdded,
@@ -39,14 +46,10 @@ class _MushroomFormState extends State<MushroomForm> {
     if (picked != null && picked != _dateAdded) {
       setState(() {
         _dateAdded = picked;
+        _dateController.text =
+            '${_dateAdded.toIso8601String().split('T').first}';
       });
     }
-  }
-
-  void _handleImageSelection(XFile? image) {
-    setState(() {
-      _selectedImage = image;
-    });
   }
 
   Future<void> _selectLocation() async {
@@ -63,66 +66,57 @@ class _MushroomFormState extends State<MushroomForm> {
       if (result == null) return;
       _latitude = result.latitude;
       _longitude = result.longitude;
+      _locationController.text = _locationString();
     });
   }
 
+  void selectImage(XFile? image) {
+    setState(() {
+      _selectedImage = image;
+    });
+  }
+
+  // Validators
   String? _validateName(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Please enter the mushroom name';
+      return 'Please enter the mushroom name.';
     }
     return null;
   }
 
   String? _validateDescription(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Please enter a description';
+      return 'Please enter a description.';
     }
     return null;
   }
 
-  String _locationString() {
-    if (_latitude == null || _longitude == null) return 'Select Location';
-    return 'Lat: $_latitude, Lng: $_longitude';
+  String? _validateDate(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please select a date.';
+    }
+    return null;
+  }
+
+  String? _validateLocation(String? value) {
+    if (value == null ||
+        value.isEmpty ||
+        _latitude == null ||
+        _longitude == null) {
+      return 'Please select a location.';
+    }
+    return null;
+  }
+
+  String? _validateImage(dynamic value) {
+    if (_selectedImage == null) {
+      return 'Please select an image';
+    }
+    return null;
   }
 
   Future<bool> submitForm() async {
     if (_formKey.currentState!.validate()) {
-      if (_latitude == null || _longitude == null) {
-        await showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              title: Text('Error'),
-              content: Text('Please select a location'),
-              actions: <Widget>[
-                TextButton(
-                  child: Text('OK'),
-                  onPressed: () => Navigator.of(context).pop(),
-                ),
-              ],
-            );
-          },
-        );
-        return false;
-      }
-
-      if (_selectedImage == null) {
-        await showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text('Error'),
-            content: Text('Please select an image'),
-            actions: <Widget>[
-              TextButton(
-                child: Text('OK'),
-                onPressed: () => Navigator.of(context).pop(),
-              ),
-            ],
-          ),
-        );
-        return false;
-      }
-
       setState(() {
         _isLoading = true;
       });
@@ -160,36 +154,66 @@ class _MushroomFormState extends State<MushroomForm> {
           child: ListView(
             children: <Widget>[
               TextFormField(
-                controller: _nameController,
-                validator: _validateName,
-              ),
+                  decoration: const InputDecoration(labelText: "Name"),
+                  controller: _nameController,
+                  validator: _validateName,
+                  onChanged: (value) {
+                    _formKey.currentState!.validate();
+                  }),
               TextFormField(
-                controller: _descriptionController,
-                validator: _validateDescription,
-              ),
+                  decoration: const InputDecoration(labelText: "Description"),
+                  controller: _descriptionController,
+                  validator: _validateDescription,
+                  onChanged: (value) {
+                    _formKey.currentState!.validate();
+                  }),
               GestureDetector(
-                onTap: () => _showMaterialDatePicker(context),
+                onTap: () => _selectDate(context),
                 child: AbsorbPointer(
                   child: TextFormField(
-                    controller: TextEditingController(
-                      text: '${_dateAdded.toIso8601String().split('T').first}',
-                    ),
-                  ),
+                      decoration:
+                          const InputDecoration(labelText: "Date Found"),
+                      controller: _dateController,
+                      validator: _validateDate,
+                      onChanged: (value) {
+                        _formKey.currentState!.validate();
+                      }),
                 ),
               ),
               GestureDetector(
                 onTap: _selectLocation,
                 child: AbsorbPointer(
                   child: TextFormField(
-                    readOnly: true,
-                    controller: TextEditingController(
-                      text: _locationString(),
-                    ),
-                  ),
+                      decoration:
+                          const InputDecoration(labelText: "Location Found"),
+                      readOnly: true,
+                      controller: _locationController,
+                      validator: _validateLocation,
+                      onChanged: (value) {
+                        _formKey.currentState!.validate();
+                      }),
                 ),
               ),
               SizedBox(height: 16.0),
-              CustomImagePicker(onImagePicked: _handleImageSelection),
+              FormField(
+                validator: _validateImage,
+                builder: (FormFieldState state) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      CustomImagePicker(onImagePicked: selectImage),
+                      state.hasError ? SizedBox(height: 5.0) : Container(),
+                      state.hasError
+                          ? Text(
+                              state.errorText!,
+                              style: TextStyle(
+                                  color: Theme.of(context).colorScheme.error),
+                            )
+                          : Container(),
+                    ],
+                  );
+                },
+              ),
               SizedBox(height: 16.0),
               ElevatedButton(
                 onPressed: () async {
@@ -215,6 +239,8 @@ class _MushroomFormState extends State<MushroomForm> {
     _nameController.dispose();
     _descriptionController.dispose();
     _photoUrlController.dispose();
+    _dateController.dispose();
+    _locationController.dispose();
     super.dispose();
   }
 }

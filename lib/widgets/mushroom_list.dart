@@ -23,7 +23,6 @@ class _MushroomListState extends State<MushroomList> {
           return Text('Error: ${snapshot.error}');
         } else if (snapshot.hasData) {
           List<Mushroom> mushrooms = snapshot.data!;
-          debugPrint('Mushrooms: $mushrooms');
           return ListView.builder(
             itemCount: mushrooms.length,
             itemBuilder: (context, index) {
