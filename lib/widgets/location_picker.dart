@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -114,8 +113,8 @@ class _LocationPickerState extends State<LocationPicker> {
   Widget build(BuildContext context) {
     return SafeArea(
       top: false,
-      child: PlatformScaffold(
-        appBar: PlatformAppBar(
+      child: Scaffold(
+        appBar: AppBar(
           title: Text("Select Location"),
           leading: IconButton(
             icon: Icon(Icons.arrow_back),

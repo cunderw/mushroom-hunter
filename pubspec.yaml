@@ -23,7 +23,6 @@ dependencies:
   intl: ^0.18.1
   cached_network_image: ^3.3.1
   cupertino_icons: ^1.0.6
-  flutter_platform_widgets: ^6.0.2
 
 dev_dependencies:
   flutter_test:

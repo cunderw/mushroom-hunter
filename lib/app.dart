@@ -1,10 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'controllers/auth_controller.dart';
 
-class MyMaterialApp extends StatelessWidget {
-  const MyMaterialApp({super.key});
+class MyMushroomHunterApp extends StatelessWidget {
+  const MyMushroomHunterApp({super.key});
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -13,20 +12,6 @@ class MyMaterialApp extends StatelessWidget {
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
-      home: const AuthGate(),
-    );
-  }
-}
-
-class MyCupertinoApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return CupertinoApp(
-      theme: CupertinoThemeData(
-        primaryColor: CupertinoColors.systemGreen,
-        primaryContrastingColor: CupertinoColors.systemBlue,
-        scaffoldBackgroundColor: CupertinoColors.systemGroupedBackground,
-      ),
       home: const AuthGate(),
     );
   }

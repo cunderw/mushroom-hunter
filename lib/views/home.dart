@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:my_mushrooms_hunter/views/my_mushrooms.dart';
 import 'package:my_mushrooms_hunter/views/near_me.dart';
@@ -51,23 +50,23 @@ class _MyHomePageState extends State<MyHomePage> {
       body: LayoutBuilder(
         builder: (context, constraints) {
           if (constraints.maxWidth < 600) {
-            if (isIOS) {
-              // iOS-specific UI, like CupertinoTabBar
-              return Column(
-                children: [
-                  Expanded(child: mainArea),
-                  CupertinoTabBar(
-                    items: <BottomNavigationBarItem>[
+            return Column(
+              children: [
+                Expanded(child: mainArea),
+                SafeArea(
+                  bottom: false,
+                  child: BottomNavigationBar(
+                    items: [
                       BottomNavigationBarItem(
-                        icon: Icon(CupertinoIcons.home),
+                        icon: Icon(Icons.home),
                         label: 'Home',
                       ),
                       BottomNavigationBarItem(
-                        icon: Icon(CupertinoIcons.location),
+                        icon: Icon(Icons.place),
                         label: 'Near Me',
                       ),
                       BottomNavigationBarItem(
-                        icon: Icon(CupertinoIcons.person),
+                        icon: Icon(Icons.person),
                         label: 'Profile',
                       ),
                     ],
@@ -78,40 +77,9 @@ class _MyHomePageState extends State<MyHomePage> {
                       });
                     },
                   ),
-                ],
-              );
-            } else {
-              return Column(
-                children: [
-                  Expanded(child: mainArea),
-                  SafeArea(
-                    bottom: false,
-                    child: BottomNavigationBar(
-                      items: [
-                        BottomNavigationBarItem(
-                          icon: Icon(Icons.home),
-                          label: 'Home',
-                        ),
-                        BottomNavigationBarItem(
-                          icon: Icon(Icons.place),
-                          label: 'Near Me',
-                        ),
-                        BottomNavigationBarItem(
-                          icon: Icon(Icons.person),
-                          label: 'Profile',
-                        ),
-                      ],
-                      currentIndex: selectedIndex,
-                      onTap: (value) {
-                        setState(() {
-                          selectedIndex = value;
-                        });
-                      },
-                    ),
-                  )
-                ],
-              );
-            }
+                )
+              ],
+            );
           } else {
             return Row(
               children: [

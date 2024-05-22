@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:my_mushrooms_hunter/controllers/mushroom_controller.dart';
 import 'package:my_mushrooms_hunter/widgets/image_picker.dart';
@@ -29,29 +28,6 @@ class _MushroomFormState extends State<MushroomForm> {
   double? _latitude = null;
   double? _longitude = null;
   bool _isLoading = false;
-
-  void _showCupertinoDatePicker(BuildContext context) {
-    showPlatformModalSheet(
-      context: context,
-      builder: (BuildContext builder) {
-        return Container(
-          height: MediaQuery.of(context).copyWith().size.height / 3,
-          child: CupertinoDatePicker(
-            initialDateTime: DateTime.now(),
-            onDateTimeChanged: (DateTime newDate) {
-              setState(() {
-                _dateAdded = newDate;
-              });
-            },
-            maximumYear: DateTime.now().year,
-            minimumYear: 2000,
-            mode: CupertinoDatePickerMode
-                .date, // Choose date, time or date and time mode according to your requirement
-          ),
-        );
-      },
-    );
-  }
 
   Future<void> _showMaterialDatePicker(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -112,15 +88,15 @@ class _MushroomFormState extends State<MushroomForm> {
   Future<bool> submitForm() async {
     if (_formKey.currentState!.validate()) {
       if (_latitude == null || _longitude == null) {
-        await showPlatformDialog(
+        await showDialog(
           context: context,
           builder: (context) {
-            return PlatformAlertDialog(
-              title: PlatformText('Error'),
-              content: PlatformText('Please select a location'),
+            return AlertDialog(
+              title: Text('Error'),
+              content: Text('Please select a location'),
               actions: <Widget>[
-                PlatformDialogAction(
-                  child: PlatformText('OK'),
+                TextButton(
+                  child: Text('OK'),
                   onPressed: () => Navigator.of(context).pop(),
                 ),
               ],
@@ -131,14 +107,14 @@ class _MushroomFormState extends State<MushroomForm> {
       }
 
       if (_selectedImage == null) {
-        await showPlatformDialog(
+        await showDialog(
           context: context,
-          builder: (context) => PlatformAlertDialog(
-            title: PlatformText('Error'),
-            content: PlatformText('Please select an image'),
+          builder: (context) => AlertDialog(
+            title: Text('Error'),
+            content: Text('Please select an image'),
             actions: <Widget>[
-              PlatformDialogAction(
-                child: PlatformText('OK'),
+              TextButton(
+                child: Text('OK'),
                 onPressed: () => Navigator.of(context).pop(),
               ),
             ],
@@ -173,9 +149,9 @@ class _MushroomFormState extends State<MushroomForm> {
 
   @override
   Widget build(BuildContext context) {
-    return PlatformScaffold(
-      appBar: PlatformAppBar(
-        title: PlatformText('Add Mushroom Data'),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Add Mushroom Data'),
       ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
@@ -183,69 +159,20 @@ class _MushroomFormState extends State<MushroomForm> {
           key: _formKey,
           child: ListView(
             children: <Widget>[
-              PlatformTextFormField(
+              TextFormField(
                 controller: _nameController,
-                material: (context, platform) => MaterialTextFormFieldData(
-                  decoration: InputDecoration(
-                    labelText: 'Name',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                cupertino: (context, platform) => CupertinoTextFormFieldData(
-                  placeholder: 'Name',
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: CupertinoColors.systemGrey,
-                      width: 1,
-                    ),
-                  ),
-                ),
                 validator: _validateName,
               ),
-              PlatformTextFormField(
+              TextFormField(
                 controller: _descriptionController,
-                material: (context, platform) => MaterialTextFormFieldData(
-                  decoration: InputDecoration(
-                    labelText: 'Description',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                cupertino: (context, platform) => CupertinoTextFormFieldData(
-                  placeholder: 'Description',
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: CupertinoColors.systemGrey,
-                      width: 1,
-                    ),
-                  ),
-                ),
                 validator: _validateDescription,
               ),
               GestureDetector(
-                onTap: () => isIOS
-                    ? _showCupertinoDatePicker(context)
-                    : _showMaterialDatePicker(context),
+                onTap: () => _showMaterialDatePicker(context),
                 child: AbsorbPointer(
-                  child: PlatformTextFormField(
+                  child: TextFormField(
                     controller: TextEditingController(
                       text: '${_dateAdded.toIso8601String().split('T').first}',
-                    ),
-                    material: (context, platform) => MaterialTextFormFieldData(
-                      decoration: InputDecoration(
-                        labelText:
-                            '${_dateAdded.toIso8601String().split('T').first}',
-                        hintText: 'Date Found',
-                      ),
-                    ),
-                    cupertino: (context, platform) =>
-                        CupertinoTextFormFieldData(
-                      placeholder: 'Date Found',
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: CupertinoColors.systemGrey,
-                          width: 1,
-                        ),
-                      ),
                     ),
                   ),
                 ),
@@ -253,25 +180,10 @@ class _MushroomFormState extends State<MushroomForm> {
               GestureDetector(
                 onTap: _selectLocation,
                 child: AbsorbPointer(
-                  child: PlatformTextFormField(
+                  child: TextFormField(
                     readOnly: true,
                     controller: TextEditingController(
                       text: _locationString(),
-                    ),
-                    material: (context, platform) => MaterialTextFormFieldData(
-                      decoration: InputDecoration(
-                        labelText: 'Location',
-                        suffixIcon: Icon(Icons.map),
-                      ),
-                    ),
-                    cupertino: (context, platform) =>
-                        CupertinoTextFormFieldData(
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: CupertinoColors.systemGrey,
-                          width: 1,
-                        ),
-                      ),
                     ),
                   ),
                 ),
@@ -279,7 +191,7 @@ class _MushroomFormState extends State<MushroomForm> {
               SizedBox(height: 16.0),
               CustomImagePicker(onImagePicked: _handleImageSelection),
               SizedBox(height: 16.0),
-              PlatformElevatedButton(
+              ElevatedButton(
                 onPressed: () async {
                   if (_isLoading) return;
                   bool isSubmitted = await submitForm();
@@ -287,15 +199,8 @@ class _MushroomFormState extends State<MushroomForm> {
                     Navigator.of(context).pop();
                   }
                 },
-                child: _isLoading
-                    ? PlatformCircularProgressIndicator(
-                        material: (context, platform) =>
-                            MaterialProgressIndicatorData(
-                          valueColor:
-                              AlwaysStoppedAnimation<Color>(Colors.white),
-                        ),
-                      )
-                    : PlatformText('Submit'),
+                child:
+                    _isLoading ? CircularProgressIndicator() : Text('Submit'),
               ),
             ],
           ),
