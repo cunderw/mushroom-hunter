@@ -20,8 +20,9 @@ class Mushroom {
   });
 
   // Converts a Mushroom instance to a Map
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toFirestoreMap(String userID) {
     return {
+      'userID': userID,
       'name': name,
       'description': description,
       'geolocation': {
@@ -29,7 +30,7 @@ class Mushroom {
         'longitude': geolocation.longitude
       },
       'photoUrl': photoUrl,
-      'dateFound': dateFound.toIso8601String(),
+      'dateFound': Timestamp.fromDate(dateFound),
     };
   }
 
