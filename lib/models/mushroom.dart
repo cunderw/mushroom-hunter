@@ -55,7 +55,7 @@ class Mushroom {
       geolocation: LatLng(
           data['geolocation']['latitude'], data['geolocation']['longitude']),
       photoUrl: data['photoUrl'] ?? '',
-      dateFound: DateTime.parse(data['dateFound']),
+      dateFound: (data['dateFound'] as Timestamp).toDate(),
     );
   }
 }
