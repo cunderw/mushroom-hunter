@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:my_mushrooms_hunter/controllers/mushroom_controller.dart';
+import 'package:my_mushrooms_hunter/data/mushroom_provider.dart';
 import 'package:my_mushrooms_hunter/widgets/image_picker.dart';
 import 'package:my_mushrooms_hunter/widgets/location_picker.dart';
 import 'package:image_picker/image_picker.dart';
@@ -10,7 +10,9 @@ import 'package:image_picker/image_picker.dart';
 bool isIOS = Platform.isIOS;
 
 class MushroomForm extends StatefulWidget {
-  const MushroomForm({Key? key}) : super(key: key);
+  final MushroomProvider mushroomProvider;
+  const MushroomForm({Key? key, required this.mushroomProvider})
+      : super(key: key);
   @override
   _MushroomFormState createState() => _MushroomFormState();
 }
@@ -121,7 +123,7 @@ class _MushroomFormState extends State<MushroomForm> {
         _isLoading = true;
       });
 
-      await submitMushroom(
+      await widget.mushroomProvider.saveMushroom(
         _selectedImage!,
         _nameController.text,
         _descriptionController.text,

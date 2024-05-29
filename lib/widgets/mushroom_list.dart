@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:my_mushrooms_hunter/models/mushroom.dart';
-import 'package:my_mushrooms_hunter/services/firebase/mushroom_service.dart';
+import 'package:my_mushrooms_hunter/data/mushroom_provider.dart';
 import 'package:my_mushrooms_hunter/widgets/mushroom_card.dart';
 
 class MushroomList extends StatefulWidget {
-  final Stream<List<Mushroom>> streamMushrooms;
-  const MushroomList({Key? key, required this.streamMushrooms})
+  final MushroomProvider mushroomProvider;
+  const MushroomList({Key? key, required this.mushroomProvider})
       : super(key: key);
   @override
   _MushroomListState createState() => _MushroomListState();
@@ -25,7 +25,7 @@ class _MushroomListState extends State<MushroomList> {
       ),
       direction: DismissDirection.endToStart,
       onDismissed: (direction) async {
-        await deleteMushroom(mushroom.id!);
+        await widget.mushroomProvider.deleteMushroom(mushroom.id!);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Mushroom deleted')),
         );
@@ -45,7 +45,7 @@ class _MushroomListState extends State<MushroomList> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<Mushroom>>(
-      stream: widget.streamMushrooms,
+      stream: widget.mushroomProvider.userMushrooms(),
       builder: (context, snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.waiting:

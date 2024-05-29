@@ -1,12 +1,17 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:my_mushrooms_hunter/services/firebase/mushroom_service.dart';
+import 'package:my_mushrooms_hunter/data/mushroom_provider.dart';
 import 'package:my_mushrooms_hunter/widgets/mushroom_form.dart';
 import 'package:my_mushrooms_hunter/widgets/mushroom_list.dart';
 
 class MyMushrooms extends StatelessWidget {
   MyMushrooms({super.key});
-  final String currentUserId = FirebaseAuth.instance.currentUser!.uid;
+  final mushroomProvider = FirestoreMushroomProvider(
+      firestore: FirebaseFirestore.instance,
+      storage: FirebaseStorage.instance,
+      userID: FirebaseAuth.instance.currentUser!.uid);
 
   @override
   Widget build(BuildContext context) {
@@ -18,14 +23,17 @@ class MyMushrooms extends StatelessWidget {
             icon: Icon(Icons.add),
             onPressed: () {
               Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => MushroomForm()),
+                MaterialPageRoute(
+                    builder: (context) => MushroomForm(
+                          mushroomProvider: mushroomProvider,
+                        )),
               );
             },
           ),
         ],
       ),
       body: MushroomList(
-        streamMushrooms: streamUserMushrooms(currentUserId),
+        mushroomProvider: mushroomProvider,
       ),
     );
   }
