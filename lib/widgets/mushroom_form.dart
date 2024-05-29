@@ -19,6 +19,11 @@ class MushroomForm extends StatefulWidget {
 
 class _MushroomFormState extends State<MushroomForm> {
   final _formKey = GlobalKey<FormState>();
+  final _nameKey = GlobalKey<FormFieldState>();
+  final _descriptionKey = GlobalKey<FormFieldState>();
+  final _dateKey = GlobalKey<FormFieldState>();
+  final _locationKey = GlobalKey<FormFieldState>();
+  final _imageKey = GlobalKey<FormFieldState>();
   final _nameController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _photoUrlController = TextEditingController();
@@ -156,54 +161,66 @@ class _MushroomFormState extends State<MushroomForm> {
           child: ListView(
             children: <Widget>[
               TextFormField(
-                  decoration: const InputDecoration(labelText: "Name"),
-                  controller: _nameController,
-                  validator: _validateName,
-                  onChanged: (value) {
-                    _formKey.currentState!.validate();
-                  }),
+                key: _nameKey,
+                decoration: const InputDecoration(labelText: "Name"),
+                controller: _nameController,
+                validator: _validateName,
+                onChanged: (value) {
+                  _nameKey.currentState?.validate();
+                },
+              ),
               TextFormField(
-                  decoration: const InputDecoration(labelText: "Description"),
-                  controller: _descriptionController,
-                  validator: _validateDescription,
-                  onChanged: (value) {
-                    _formKey.currentState!.validate();
-                  }),
+                key: _descriptionKey,
+                decoration: const InputDecoration(labelText: "Description"),
+                controller: _descriptionController,
+                validator: _validateDescription,
+                onChanged: (value) {
+                  _descriptionKey.currentState?.validate();
+                },
+              ),
               GestureDetector(
                 onTap: () => _selectDate(context),
                 child: AbsorbPointer(
                   child: TextFormField(
-                      decoration:
-                          const InputDecoration(labelText: "Date Found"),
-                      controller: _dateController,
-                      validator: _validateDate,
-                      onChanged: (value) {
-                        _formKey.currentState!.validate();
-                      }),
+                    key: _dateKey,
+                    decoration: const InputDecoration(labelText: "Date Found"),
+                    controller: _dateController,
+                    validator: _validateDate,
+                    onChanged: (value) {
+                      _dateKey.currentState?.validate();
+                    },
+                  ),
                 ),
               ),
               GestureDetector(
                 onTap: _selectLocation,
                 child: AbsorbPointer(
                   child: TextFormField(
-                      decoration:
-                          const InputDecoration(labelText: "Location Found"),
-                      readOnly: true,
-                      controller: _locationController,
-                      validator: _validateLocation,
-                      onChanged: (value) {
-                        _formKey.currentState!.validate();
-                      }),
+                    decoration:
+                        const InputDecoration(labelText: "Location Found"),
+                    readOnly: true,
+                    controller: _locationController,
+                    validator: _validateLocation,
+                    onChanged: (value) {
+                      _locationKey.currentState?.validate();
+                    },
+                  ),
                 ),
               ),
               SizedBox(height: 16.0),
               FormField(
+                key: _imageKey,
                 validator: _validateImage,
                 builder: (FormFieldState state) {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      CustomImagePicker(onImagePicked: selectImage),
+                      CustomImagePicker(
+                        onImagePicked: (image) {
+                          selectImage(image);
+                          _imageKey.currentState?.validate();
+                        },
+                      ),
                       state.hasError ? SizedBox(height: 5.0) : Container(),
                       state.hasError
                           ? Text(
