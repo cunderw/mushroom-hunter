@@ -30,7 +30,7 @@ class _LocationPickerState extends State<LocationPicker> {
   Future<void> _determineInitialPosition() async {
     bool serviceEnabled;
     LocationPermission permission;
-    LatLng initialPostion;
+    LatLng initialPosition;
 
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
@@ -50,20 +50,20 @@ class _LocationPickerState extends State<LocationPicker> {
     }
 
     if (initialLat != null && initialLng != null) {
-      initialPostion = LatLng(initialLat!, initialLng!);
+      initialPosition = LatLng(initialLat!, initialLng!);
     } else {
       Position position = await Geolocator.getCurrentPosition();
-      initialPostion = LatLng(position.latitude, position.longitude);
+      initialPosition = LatLng(position.latitude, position.longitude);
     }
 
     setState(() {
-      _currentPosition = initialPostion;
+      _currentPosition = initialPosition;
     });
 
     _mapController?.animateCamera(
       CameraUpdate.newCameraPosition(
         CameraPosition(
-          target: initialPostion,
+          target: initialPosition,
           zoom: 11.0,
         ),
       ),
