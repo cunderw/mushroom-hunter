@@ -3,16 +3,11 @@ import 'package:my_mushrooms_hunter/models/mushroom.dart';
 import 'package:my_mushrooms_hunter/data/mushroom_provider.dart';
 import 'package:my_mushrooms_hunter/widgets/mushroom_card.dart';
 
-class MushroomList extends StatefulWidget {
+class MushroomList extends StatelessWidget {
   final MushroomProvider mushroomProvider;
-  const MushroomList({Key? key, required this.mushroomProvider})
-      : super(key: key);
-  @override
-  _MushroomListState createState() => _MushroomListState();
-}
+  MushroomList({Key? key, required this.mushroomProvider}) : super(key: key);
 
-class _MushroomListState extends State<MushroomList> {
-  Widget buildMushroomCard(Mushroom mushroom, int index) {
+  Widget buildMushroomCard(BuildContext context, Mushroom mushroom, int index) {
     return Dismissible(
       key: Key(mushroom.id!),
       background: Container(
@@ -25,7 +20,7 @@ class _MushroomListState extends State<MushroomList> {
       ),
       direction: DismissDirection.endToStart,
       onDismissed: (direction) async {
-        await widget.mushroomProvider.deleteMushroom(mushroom.id!);
+        await mushroomProvider.deleteMushroom(mushroom.id!);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Mushroom deleted')),
         );
@@ -38,14 +33,14 @@ class _MushroomListState extends State<MushroomList> {
     return ListView.builder(
       itemCount: mushrooms.length,
       itemBuilder: (context, index) =>
-          buildMushroomCard(mushrooms[index], index),
+          buildMushroomCard(context, mushrooms[index], index),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<Mushroom>>(
-      stream: widget.mushroomProvider.userMushrooms(),
+      stream: mushroomProvider.userMushrooms(),
       builder: (context, snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.waiting:
