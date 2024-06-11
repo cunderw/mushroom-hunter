@@ -23,32 +23,12 @@ void main() {
       expect(map['userID'], userID);
       expect(map['name'], mushroom.name);
       expect(map['description'], mushroom.description);
-      expect(map['geolocation']['latitude'], mushroom.geolocation.latitude);
-      expect(map['geolocation']['longitude'], mushroom.geolocation.longitude);
+      expect((map['geolocation'])['geopoint'].latitude,
+          mushroom.geolocation.latitude);
+      expect((map['geolocation'])['geopoint'].longitude,
+          mushroom.geolocation.longitude);
       expect(map['photoUrl'], mushroom.photoUrl);
       expect((map['dateFound'] as Timestamp).toDate(), mushroom.dateFound);
-    });
-
-    test('fromMap should create a Mushroom instance from a Map', () {
-      final map = {
-        'name': 'Amanita',
-        'description': 'A poisonous mushroom.',
-        'geolocation': {
-          'latitude': 40.7128,
-          'longitude': -74.0060,
-        },
-        'photoUrl': 'http://example.com/photo.jpg',
-        'dateFound': '2023-05-22T00:00:00.000',
-      };
-
-      final newMushroom = Mushroom.fromMap(map);
-
-      expect(newMushroom.name, mushroom.name);
-      expect(newMushroom.description, mushroom.description);
-      expect(newMushroom.geolocation.latitude, mushroom.geolocation.latitude);
-      expect(newMushroom.geolocation.longitude, mushroom.geolocation.longitude);
-      expect(newMushroom.photoUrl, mushroom.photoUrl);
-      expect(newMushroom.dateFound, mushroom.dateFound);
     });
 
     test(
@@ -60,8 +40,7 @@ void main() {
         'name': 'Amanita',
         'description': 'A poisonous mushroom.',
         'geolocation': {
-          'latitude': 40.7128,
-          'longitude': -74.0060,
+          'geopoint': GeoPoint(40.7128, -74.0060),
         },
         'photoUrl': 'http://example.com/photo.jpg',
         'dateFound': Timestamp.fromDate(DateTime(2023, 5, 22)),

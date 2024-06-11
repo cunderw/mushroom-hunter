@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:geoflutterfire2/geoflutterfire2.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:logger/logger.dart';
@@ -20,6 +21,7 @@ class FirestoreMushroomProvider implements MushroomProvider {
   final FirebaseFirestore firestore;
   final FirebaseStorage storage;
   final logger = Logger();
+  final geo = GeoFlutterFire();
 
   CollectionReference get collection => firestore.collection('mushrooms');
 
@@ -81,11 +83,11 @@ class FirestoreMushroomProvider implements MushroomProvider {
 
   @override
   Stream<List<Mushroom>> userMushrooms() {
-    return collection
+    final collectionRef = collection
         .where('userID', isEqualTo: userID)
-        .orderBy('dateFound', descending: true)
-        .snapshots()
-        .map((snapshot) =>
+        .orderBy('dateFound', descending: true);
+    return geo.collection(collectionRef: collectionRef).snapshot()!.map(
+        (snapshot) =>
             snapshot.docs.map((doc) => Mushroom.fromFirestore(doc)).toList());
   }
 }
