@@ -1,7 +1,11 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:my_mushrooms_hunter/data/mushroom_provider.dart';
 import 'package:my_mushrooms_hunter/views/my_mushrooms.dart';
 import 'package:my_mushrooms_hunter/views/near_me.dart';
 
@@ -15,34 +19,34 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final mushroomProvider = FirestoreMushroomProvider(
+      firestore: FirebaseFirestore.instance,
+      storage: FirebaseStorage.instance,
+      userID: FirebaseAuth.instance.currentUser!.uid);
+
   var selectedIndex = 0;
+  List<Widget> pages = [];
+
+  @override
+  void initState() {
+    super.initState();
+
+    pages = [
+      MyMushrooms(mushroomProvider: mushroomProvider),
+      NearMe(mushroomProvider: mushroomProvider),
+      ProfileScreen(),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
-    var colorScheme = Theme.of(context).colorScheme;
+    final colorScheme = Theme.of(context).colorScheme;
 
-    Widget page;
-    switch (selectedIndex) {
-      case 0:
-        page = MyMushrooms();
-        break;
-      case 1:
-        page = NearMe();
-        break;
-      case 2:
-        page = ProfileScreen();
-        break;
-      default:
-        throw UnimplementedError('no widget for $selectedIndex');
-    }
-
-    // The container for the current page, with its background color
-    // and subtle switching animation.
-    var mainArea = ColoredBox(
+    final mainArea = ColoredBox(
       color: colorScheme.surfaceVariant,
-      child: AnimatedSwitcher(
-        duration: Duration(milliseconds: 200),
-        child: page,
+      child: IndexedStack(
+        index: selectedIndex,
+        children: pages,
       ),
     );
 
@@ -53,31 +57,28 @@ class _MyHomePageState extends State<MyHomePage> {
             return Column(
               children: [
                 Expanded(child: mainArea),
-                SafeArea(
-                  bottom: false,
-                  child: BottomNavigationBar(
-                    items: [
-                      BottomNavigationBarItem(
-                        icon: Icon(Icons.home),
-                        label: 'Home',
-                      ),
-                      BottomNavigationBarItem(
-                        icon: Icon(Icons.place),
-                        label: 'Near Me',
-                      ),
-                      BottomNavigationBarItem(
-                        icon: Icon(Icons.person),
-                        label: 'Profile',
-                      ),
-                    ],
-                    currentIndex: selectedIndex,
-                    onTap: (value) {
-                      setState(() {
-                        selectedIndex = value;
-                      });
-                    },
-                  ),
-                )
+                BottomNavigationBar(
+                  items: [
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.home),
+                      label: 'Home',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.place),
+                      label: 'Near Me',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.person),
+                      label: 'Profile',
+                    ),
+                  ],
+                  currentIndex: selectedIndex,
+                  onTap: (value) {
+                    setState(() {
+                      selectedIndex = value;
+                    });
+                  },
+                ),
               ],
             );
           } else {

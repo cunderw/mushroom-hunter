@@ -15,6 +15,8 @@ abstract class MushroomProvider {
   Future<void> updateMushroom(Mushroom mushroom);
   Future<void> deleteMushroom(String id);
   Stream<List<Mushroom>> userMushrooms();
+  Stream<List<Mushroom>> mushroomsNearLocation(
+      double lat, double lng, double radius);
 }
 
 class FirestoreMushroomProvider implements MushroomProvider {
@@ -89,5 +91,21 @@ class FirestoreMushroomProvider implements MushroomProvider {
     return geo.collection(collectionRef: collectionRef).snapshot()!.map(
         (snapshot) =>
             snapshot.docs.map((doc) => Mushroom.fromFirestore(doc)).toList());
+  }
+
+  Stream<List<Mushroom>> mushroomsNearLocation(
+      double lat, double lng, double radius) {
+    // Create a geoFirePoint
+    GeoFirePoint center = geo.point(latitude: lat, longitude: lng);
+
+    return geo
+        .collection(collectionRef: collection)
+        .within(
+            center: center,
+            radius: radius,
+            field: 'geolocation',
+            strictMode: true)
+        .map((snapshot) =>
+            snapshot.map((doc) => Mushroom.fromFirestore(doc)).toList());
   }
 }

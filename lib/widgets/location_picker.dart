@@ -64,7 +64,7 @@ class _LocationPickerState extends State<LocationPicker> {
       CameraUpdate.newCameraPosition(
         CameraPosition(
           target: initialPosition,
-          zoom: 11.0,
+          zoom: 20.0,
         ),
       ),
     );
@@ -78,7 +78,7 @@ class _LocationPickerState extends State<LocationPicker> {
         CameraUpdate.newCameraPosition(
           CameraPosition(
             target: _currentPosition,
-            zoom: 11.0,
+            zoom: 20.0,
           ),
         ),
       );
@@ -125,9 +125,10 @@ class _LocationPickerState extends State<LocationPicker> {
         ),
         body: GoogleMap(
           onMapCreated: _onMapCreated,
+          mapType: MapType.hybrid,
           initialCameraPosition: CameraPosition(
             target: _currentPosition,
-            zoom: 11.0,
+            zoom: 20.0,
           ),
           markers: _markers,
           onTap: _handleSelectLocation,
